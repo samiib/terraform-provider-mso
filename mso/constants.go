@@ -54,3 +54,25 @@ var enabledDisabledMap = map[interface{}]interface{}{
 	true:       "enabled",
 	false:      "disabled",
 }
+
+var ptpProfileTemplateMap = map[string]string{
+	"aes67":           "aes67",
+	"default":         "default",
+	"smpte":           "smpte",
+	"telecom":         "telecomFullPath",
+	"telecomFullPath": "telecom",
+}
+
+var ptpDestinationMacMap = map[string]string{
+	"forwardable":     "forwardable",
+	"non_forwardable": "nonForwardable",
+	"nonForwardable":  "non_forwardable",
+}
+
+var ptpMismatchedMacHandlingMap = map[string]string{
+	"drop":                    "drop",
+	"reply_with_config_mac":   "replyWithCfgMac",
+	"replyWithCfgMac":         "reply_with_config_mac",
+	"reply_with_received_mac": "replyWithRxMac",
+	"replyWithRxMac":          "reply_with_received_mac",
+}
