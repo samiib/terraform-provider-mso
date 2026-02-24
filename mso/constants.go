@@ -95,3 +95,12 @@ var loadBalanceHashingMap = map[string]string{
 	"layer_4_source_ip":      "l4-src-port",
 	"source_ip":              "src-ip",
 }
+
+var synceQualityLevelOptionsMap = map[string]string{
+	"op1":                   "option_1",
+	"op2g1":                 "option_2_generation_1",
+	"op2g2":                 "option_2_generation_2",
+	"option_1":              "op1",
+	"option_2_generation_1": "op2g1",
+	"option_2_generation_2": "op2g2",
+}
