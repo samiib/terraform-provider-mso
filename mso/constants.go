@@ -54,3 +54,12 @@ var enabledDisabledMap = map[interface{}]interface{}{
 	true:       "enabled",
 	false:      "disabled",
 }
+
+var synceQualityLevelOptionsMap = map[string]string{
+	"op1":                   "option_1",
+	"op2g1":                 "option_2_generation_1",
+	"op2g2":                 "option_2_generation_2",
+	"option_1":              "op1",
+	"option_2_generation_1": "op2g1",
+	"option_2_generation_2": "op2g2",
+}
