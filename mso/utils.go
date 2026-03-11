@@ -540,3 +540,19 @@ func GetDeployedSiteIdsForApplicationTemplate(msoClient *client.Client, schemaId
 	}
 	return siteIds, nil
 }
+
+func splitCommaString(s string) []string {
+	s = strings.TrimSpace(s)
+	if s == "" {
+		return []string{}
+	}
+	parts := strings.Split(s, ",")
+	out := make([]string, 0, len(parts))
+	for _, part := range parts {
+		part = strings.TrimSpace(part)
+		if part != "" {
+			out = append(out, part)
+		}
+	}
+	return out
+}
