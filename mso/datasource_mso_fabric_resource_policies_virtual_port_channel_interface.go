@@ -51,9 +51,9 @@ func dataSourceMSOVirtualPortChannelInterface() *schema.Resource {
 				Computed: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						"node":         {Type: schema.TypeString, Computed: true},
-						"interface": {Type: schema.TypeString, Computed: true},
-						"description":  {Type: schema.TypeString, Computed: true},
+						"node":        {Type: schema.TypeString, Computed: true},
+						"interface":   {Type: schema.TypeString, Computed: true},
+						"description": {Type: schema.TypeString, Computed: true},
 					},
 				},
 			},
