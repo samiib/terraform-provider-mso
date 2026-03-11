@@ -179,7 +179,7 @@ func resourceMSOVirtualPortChannelInterfaceCreate(d *schema.ResourceData, m any)
 	msoClient := m.(*client.Client)
 
 	templateId := d.Get("template_id").(string)
-	
+
 	interfaces1 := getListOfStringsFromSchemaList(d, "node_1_interfaces")
 	interfaces2 := getListOfStringsFromSchemaList(d, "node_2_interfaces")
 
@@ -333,7 +333,7 @@ func buildInterfaceDescriptionsPayload(d *schema.ResourceData) []map[string]any 
 	for _, v := range raw {
 		m := v.(map[string]any)
 		out = append(out, map[string]any{
-			"nodeID":        m["node"].(string),
+			"nodeID":      m["node"].(string),
 			"interfaceID": m["interface"].(string),
 			"description": m["description"].(string),
 		})
