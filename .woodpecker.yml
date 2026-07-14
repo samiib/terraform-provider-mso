@@ -1,0 +1,33 @@
+when:
+  event:
+    - push
+    - manual
+    - cron
+
+variables:
+  - &go_image "10.15.39.22:5000/ci-builder:latest"
+
+steps:
+  lint:
+    image: *go_image
+    when:
+      event: [push, manual, cron]
+    commands:
+      - go vet ./...
+
+  build:
+    image: *go_image
+    when:
+      event: [push, manual, cron]
+    commands:
+      - go build ./...
+
+  test:
+    image: *go_image
+    when:
+      event: [push, manual, cron]
+    commands:
+      - go test ./... -timeout 120s
+
+labels:
+  platform: linux/amd64
