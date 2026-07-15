@@ -28,22 +28,19 @@ steps:
       event: [manual]
     environment:
       TF_ACC: "1"
-      TF_LOG: ""
-      MSO_PLATFORM: "nd"
       MSO_URL:
         from_secret: MSO_URL
       MSO_USERNAME:
         from_secret: MSO_USERNAME
       MSO_PASSWORD:
         from_secret: MSO_PASSWORD
-      APIC_URL:
-        from_secret: APIC_URL
-      APIC_USERNAME:
-        from_secret: APIC_USERNAME
-      APIC_PASSWORD:
-        from_secret: APIC_PASSWORD
 
     commands:
+      - export TF_LOG="${TF_LOG:-${CI_BUILD_PARAM_TF_LOG:-${CI_PIPELINE_PARAM_TF_LOG:-}}}"
+      - export MSO_PLATFORM="${MSO_PLATFORM:-${CI_BUILD_PARAM_MSO_PLATFORM:-${CI_PIPELINE_PARAM_MSO_PLATFORM:-nd}}}"
+      - export APIC_URL="${APIC_URL:-${CI_BUILD_PARAM_APIC_URL:-${CI_PIPELINE_PARAM_APIC_URL:-}}}"
+      - export APIC_USERNAME="${APIC_USERNAME:-${CI_BUILD_PARAM_APIC_USERNAME:-${CI_PIPELINE_PARAM_APIC_USERNAME:-}}}"
+      - export APIC_PASSWORD="${APIC_PASSWORD:-${CI_BUILD_PARAM_APIC_PASSWORD:-${CI_PIPELINE_PARAM_APIC_PASSWORD:-}}}"
       - export ACC_TEST_REGEX="${ACC_TEST_REGEX:-${CI_BUILD_PARAM_ACC_TEST_REGEX:-${CI_PIPELINE_PARAM_ACC_TEST_REGEX:-^TestAccMSOSchemaTemplateBd.*}}}"
       - export ACC_TIMEOUT="${ACC_TIMEOUT:-${CI_BUILD_PARAM_ACC_TIMEOUT:-${CI_PIPELINE_PARAM_ACC_TIMEOUT:-600m}}}"
       - echo "Running acceptance tests (regex ${ACC_TEST_REGEX}, timeout ${ACC_TIMEOUT})"
