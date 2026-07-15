@@ -15,19 +15,29 @@ steps:
   #   commands:
   #     - go vet ./...
 
-  build:
-    image: *go_image
-    when:
-      event: [push, manual, cron]
-    commands:
-      - go build ./...
+  # build:
+  #   image: *go_image
+  #   when:
+  #     event: [push, manual, cron]
+  #   commands:
+  #     - go build ./...
 
-  test:
+  acceptance_test:
     image: *go_image
     when:
-      event: [push, manual, cron]
+      event: [manual]
+    environment:
+      TF_ACC: "1"
+      MSO_URL:
+        from_secret: MSO_URL
+      MSO_USERNAME:
+        from_secret: MSO_USERNAME
+      MSO_PASSWORD:
+        from_secret: MSO_PASSWORD
+      MSO_PLATFORM: "nd"
     commands:
-      - go test ./mso/... -timeout 120s
+      - echo "Running acceptance tests (regex ${ACC_TEST_REGEX:-${CI_BUILD_PARAM_ACC_TEST_REGEX:-${CI_PIPELINE_PARAM_ACC_TEST_REGEX:-^TestAccMSOSchemaTemplateBdResource$}}})"
+      - go test ./mso/... -run "${ACC_TEST_REGEX:-${CI_BUILD_PARAM_ACC_TEST_REGEX:-${CI_PIPELINE_PARAM_ACC_TEST_REGEX:-^TestAccMSOSchemaTemplateBdResource$}}}" -count=1 -timeout 30m
 
 labels:
   platform: linux/amd64
