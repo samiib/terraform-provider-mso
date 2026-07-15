@@ -28,16 +28,26 @@ steps:
       event: [manual]
     environment:
       TF_ACC: "1"
+      TF_LOG: ""
+      MSO_PLATFORM: "nd"
       MSO_URL:
         from_secret: MSO_URL
       MSO_USERNAME:
         from_secret: MSO_USERNAME
       MSO_PASSWORD:
         from_secret: MSO_PASSWORD
-      MSO_PLATFORM: "nd"
+      APIC_URL:
+        from_secret: APIC_URL
+      APIC_USERNAME:
+        from_secret: APIC_USERNAME
+      APIC_PASSWORD:
+        from_secret: APIC_PASSWORD
+
     commands:
-      - echo "Running acceptance tests (regex ${ACC_TEST_REGEX:-${CI_BUILD_PARAM_ACC_TEST_REGEX:-${CI_PIPELINE_PARAM_ACC_TEST_REGEX:-^TestAccMSOSchemaTemplateBdResource$}}})"
-      - go test ./mso/... -run "${ACC_TEST_REGEX:-${CI_BUILD_PARAM_ACC_TEST_REGEX:-${CI_PIPELINE_PARAM_ACC_TEST_REGEX:-^TestAccMSOSchemaTemplateBdResource$}}}" -count=1 -timeout 30m
+      - export ACC_TEST_REGEX="${ACC_TEST_REGEX:-${CI_BUILD_PARAM_ACC_TEST_REGEX:-${CI_PIPELINE_PARAM_ACC_TEST_REGEX:-^TestAccMSOSchemaTemplateBd.*}}}"
+      - export ACC_TIMEOUT="${ACC_TIMEOUT:-${CI_BUILD_PARAM_ACC_TIMEOUT:-${CI_PIPELINE_PARAM_ACC_TIMEOUT:-600m}}}"
+      - echo "Running acceptance tests (regex ${ACC_TEST_REGEX}, timeout ${ACC_TIMEOUT})"
+      - go test -v ./mso/... -mod=vendor -run "${ACC_TEST_REGEX}" -count=1 -timeout "${ACC_TIMEOUT}"
 
 labels:
   platform: linux/amd64
