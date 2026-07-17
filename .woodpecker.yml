@@ -8,12 +8,15 @@ variables:
 
 matrix:
   include:
-    - ND_NAME: "ND 3.2"
-      ND_URL: "https://10.15.0.127/"
-    # - ND_NAME: "ND 4.1"
-    #   ND_URL: "https://10.15.0.126/"
+    # - ND_NAME: "ND 3.2"
+    #   ND_URL: "https://10.15.0.127/"
+    #   APIC_URL: "https://10.15.39.241/"
+    - ND_NAME: "ND 4.1"
+      ND_URL: "https://10.15.0.126/"
+      APIC_URL: "https://10.15.38.241/"
     - ND_NAME: "ND 4.2"
       ND_URL: "https://10.15.0.128/"
+      APIC_URL: "https://10.15.38.243/" 
 
 steps:
 
@@ -27,6 +30,10 @@ steps:
         from_secret: MSO_USERNAME
       MSO_PASSWORD:
         from_secret: MSO_PASSWORD
+      APIC_USERNAME:
+        from_secret: APIC_USERNAME
+      APIC_PASSWORD:
+        from_secret: APIC_PASSWORD
 
     commands:
       - |
@@ -38,9 +45,7 @@ steps:
         TF_LOG="$${TF_LOG:-$${CI_BUILD_PARAM_TF_LOG:-$${CI_PIPELINE_PARAM_TF_LOG:-}}}" \
         MSO_URL="${ND_URL}" \
         MSO_PLATFORM="$${MSO_PLATFORM:-$${CI_BUILD_PARAM_MSO_PLATFORM:-$${CI_PIPELINE_PARAM_MSO_PLATFORM:-nd}}}" \
-        APIC_URL="$${APIC_URL:-$${CI_BUILD_PARAM_APIC_URL:-$${CI_PIPELINE_PARAM_APIC_URL:-}}}" \
-        APIC_USERNAME="$${APIC_USERNAME:-$${CI_BUILD_PARAM_APIC_USERNAME:-$${CI_PIPELINE_PARAM_APIC_USERNAME:-}}}" \
-        APIC_PASSWORD="$${APIC_PASSWORD:-$${CI_BUILD_PARAM_APIC_PASSWORD:-$${CI_PIPELINE_PARAM_APIC_PASSWORD:-}}}" \
+        APIC_URL="${APIC_URL}" \
         go test -v ./mso/... -mod=vendor -run "$${ACC_TEST_REGEX}" -count=1 -timeout "$${ACC_TIMEOUT}"
 
 labels:
