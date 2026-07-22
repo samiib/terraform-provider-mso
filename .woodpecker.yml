@@ -8,15 +8,15 @@ variables:
 
 matrix:
   include:
-    # - ND_NAME: "ND 3.2"
-    #   ND_URL: "https://10.15.0.127/"
-    #   APIC_URL: "https://10.15.39.241/"
-    - ND_NAME: "ND 4.1"
-      ND_URL: "https://10.15.0.126/"
-      APIC_URL: "https://10.15.38.241/"
-    - ND_NAME: "ND 4.2"
-      ND_URL: "https://10.15.0.128/"
-      APIC_URL: "https://10.15.38.243/" 
+    - ND_NAME: "ND 3.2"
+      ND_URL: "https://10.15.0.127/"
+      APIC_URL: "https://10.15.39.241/"
+    # - ND_NAME: "ND 4.1"
+    #   ND_URL: "https://10.15.0.126/"
+    #   APIC_URL: "https://10.15.38.241/"
+    # - ND_NAME: "ND 4.2"
+    #   ND_URL: "https://10.15.0.128/"
+    #   APIC_URL: "https://10.15.38.243/" 
 
 steps:
 
