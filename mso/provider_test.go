@@ -315,6 +315,20 @@ func testAccVersionCheck(t *testing.T, minVersion string) {
 	}
 }
 
+// testAccMaxVersionCheck skips the test if the NDO version is at or newer than maxVersion.
+// Must be called after testAccPreCheck in the same PreCheck function.
+// maxVersion should be a version string like "5.3" or "5.3.0.0".
+func testAccMaxVersionCheck(t *testing.T, maxVersion string) {
+	t.Helper()
+	result, err := msoClientTest.CompareVersion(maxVersion)
+	if err != nil {
+		t.Skipf("Skipping: could not determine NDO version: %s", err)
+	}
+	if result <= 0 {
+		t.Skipf("Skipping: not supported on NDO >= %s", maxVersion)
+	}
+}
+
 // CustomTestCheckCollectionElemAttrsByKeys locates the TypeSet element whose
 // attributes match every key/value pair in matchAttrs and compares every key
 // in attrsToCheck against the value stored in state, producing a
