@@ -12,7 +12,7 @@
     {
       "description": "Group all Terraform plugin toolchain packages into a single PR so the muxed provider always compiles",
       "matchManagers": ["gomod"],
-      "matchPackageNames": ["github.com/hashicorp/terraform-plugin-*"],
+      "matchPackageNames": ["/^github\\.com/hashicorp/terraform-plugin-/"],
       "groupName": "terraform-plugin toolchain"
     },
     {
