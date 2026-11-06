@@ -23,7 +23,14 @@
     },
     {
       "matchManagers": ["github-actions"],
-      "groupName": "github actions"
+      "groupName": "github actions",
+      "separateMajorMinor": false
+    },
+    {
+      "description": "Python in workflows is not a provider dependency",
+      "matchManagers": ["github-actions"],
+      "matchDepNames": ["python"],
+      "enabled": false
     }
   ]
 }

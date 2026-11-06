@@ -1,4 +1,4 @@
-// Copyright IBM Corp. 2019, 2026
+// Copyright (c) HashiCorp, Inc.
 // SPDX-License-Identifier: MPL-2.0
 
 package resource
@@ -61,21 +61,21 @@ func (s TestStep) providerConfig(_ context.Context, skipProviderBlock bool) stri
 
 	for name, externalProvider := range s.ExternalProviders {
 		if !skipProviderBlock {
-			fmt.Fprintf(&providerBlocks, "provider %q {}\n", name)
+			providerBlocks.WriteString(fmt.Sprintf("provider %q {}\n", name))
 		}
 
 		if externalProvider.Source == "" && externalProvider.VersionConstraint == "" {
 			continue
 		}
 
-		fmt.Fprintf(&requiredProviderBlocks, "    %s = {\n", name)
+		requiredProviderBlocks.WriteString(fmt.Sprintf("    %s = {\n", name))
 
 		if externalProvider.Source != "" {
-			fmt.Fprintf(&requiredProviderBlocks, "      source = %q\n", externalProvider.Source)
+			requiredProviderBlocks.WriteString(fmt.Sprintf("      source = %q\n", externalProvider.Source))
 		}
 
 		if externalProvider.VersionConstraint != "" {
-			fmt.Fprintf(&requiredProviderBlocks, "      version = %q\n", externalProvider.VersionConstraint)
+			requiredProviderBlocks.WriteString(fmt.Sprintf("      version = %q\n", externalProvider.VersionConstraint))
 		}
 
 		requiredProviderBlocks.WriteString("    }\n")
