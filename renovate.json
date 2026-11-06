@@ -18,6 +18,15 @@
       "depNameTemplate": "go-terraform-version",
       "datasourceTemplate": "custom.terraform-go-version",
       "versioningTemplate": "semver"
+    },
+    {
+      "customType": "regex",
+      "description": "Keep .go-version in sync with the Go version used by HashiCorp Terraform",
+      "managerFilePatterns": ["/^\\.go-version$/"],
+      "matchStrings": ["^(?<currentValue>\\d+\\.\\d+\\.\\d+)\\s*$"],
+      "depNameTemplate": "go-terraform-version",
+      "datasourceTemplate": "custom.terraform-go-version",
+      "versioningTemplate": "semver"
     }
   ],
   "customDatasources": {
