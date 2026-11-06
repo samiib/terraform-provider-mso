@@ -8,6 +8,7 @@
   "minimumReleaseAge": "3 days",
   "prConcurrentLimit": 5,
   "prHourlyLimit": 0,
+  "recreateWhen": "always",
   "labels": ["dependencies"],
   "customManagers": [
     {
