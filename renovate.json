@@ -14,7 +14,7 @@
       "description": "Keep the go directive in sync with the Go version used by HashiCorp Terraform",
       "managerFilePatterns": ["/(^|/)go\\.mod$/"],
       "matchStrings": ["(?m)^go (?<currentValue>\\d+\\.\\d+\\.\\d+)$"],
-      "depNameTemplate": "go (hashicorp/terraform)",
+      "depNameTemplate": "go-terraform-version",
       "datasourceTemplate": "custom.terraform-go-version",
       "versioningTemplate": "semver"
     }
