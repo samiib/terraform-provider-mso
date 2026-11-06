@@ -8,6 +8,23 @@
   "minimumReleaseAge": "3 days",
   "prConcurrentLimit": 5,
   "labels": ["dependencies"],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "Keep the go directive in sync with the Go version used by HashiCorp Terraform",
+      "managerFilePatterns": ["/(^|/)go\\.mod$/"],
+      "matchStrings": ["(?m)^go (?<currentValue>\\d+\\.\\d+\\.\\d+)$"],
+      "depNameTemplate": "go (hashicorp/terraform)",
+      "datasourceTemplate": "custom.terraform-go-version",
+      "versioningTemplate": "semver"
+    }
+  ],
+  "customDatasources": {
+    "terraform-go-version": {
+      "defaultRegistryUrlTemplate": "https://raw.githubusercontent.com/hashicorp/terraform/main/.go-version",
+      "format": "plain"
+    }
+  },
   "packageRules": [
     {
       "description": "Group all Terraform plugin toolchain packages into a single PR so the muxed provider always compiles",
@@ -16,10 +33,15 @@
       "groupName": "terraform-plugin toolchain"
     },
     {
-      "description": "Keep the go directive bump in its own PR",
+      "description": "Follow the Go version used by HashiCorp Terraform instead of the latest Go release",
       "matchManagers": ["gomod"],
-      "matchDepTypes": ["golang"],
-      "groupName": "go version"
+      "matchDatasources": ["golang-version"],
+      "enabled": false
+    },
+    {
+      "description": "The custom datasource has no release timestamps, so the release age check can't apply",
+      "matchDatasources": ["custom.terraform-go-version"],
+      "minimumReleaseAge": null
     },
     {
       "matchManagers": ["github-actions"],
