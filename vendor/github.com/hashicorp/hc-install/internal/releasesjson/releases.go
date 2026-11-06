@@ -1,4 +1,4 @@
-// Copyright IBM Corp. 2020, 2026
+// Copyright (c) HashiCorp, Inc.
 // SPDX-License-Identifier: MPL-2.0
 
 package releasesjson
@@ -7,7 +7,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"net/url"
@@ -55,7 +55,7 @@ type Releases struct {
 
 func NewReleases() *Releases {
 	return &Releases{
-		logger:  log.New(io.Discard, "", 0),
+		logger:  log.New(ioutil.Discard, "", 0),
 		BaseURL: defaultBaseURL,
 	}
 }
@@ -65,7 +65,7 @@ func (r *Releases) SetLogger(logger *log.Logger) {
 }
 
 func (r *Releases) ListProductVersions(ctx context.Context, productName string) (ProductVersionsMap, error) {
-	client := httpclient.NewHTTPClient(r.logger)
+	client := httpclient.NewHTTPClient()
 
 	productIndexURL := fmt.Sprintf("%s/%s/index.json",
 		r.BaseURL,
@@ -95,7 +95,7 @@ func (r *Releases) ListProductVersions(ctx context.Context, productName string) 
 
 	r.logger.Printf("received %s", resp.Status)
 
-	body, err := io.ReadAll(resp.Body)
+	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
 	}
@@ -122,7 +122,7 @@ func (r *Releases) ListProductVersions(ctx context.Context, productName string) 
 }
 
 func (r *Releases) GetProductVersion(ctx context.Context, product string, version *version.Version) (*ProductVersion, error) {
-	client := httpclient.NewHTTPClient(r.logger)
+	client := httpclient.NewHTTPClient()
 
 	indexURL := fmt.Sprintf("%s/%s/%s/index.json",
 		r.BaseURL,
@@ -153,7 +153,7 @@ func (r *Releases) GetProductVersion(ctx context.Context, product string, versio
 
 	r.logger.Printf("received %s", resp.Status)
 
-	body, err := io.ReadAll(resp.Body)
+	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
 	}

@@ -1,4 +1,4 @@
-// Copyright IBM Corp. 2020, 2026
+// Copyright (c) HashiCorp, Inc.
 // SPDX-License-Identifier: MPL-2.0
 
 //go:build !linux
@@ -59,13 +59,13 @@ func (tf *Terraform) runTerraformCmd(ctx context.Context, cmd *exec.Cmd) error {
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		errStdout = tf.writeOutput(ctx, stdoutPipe, stdoutWriter)
+		errStdout = writeOutput(ctx, stdoutPipe, stdoutWriter)
 	}()
 
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		errStderr = tf.writeOutput(ctx, stderrPipe, stderrWriter)
+		errStderr = writeOutput(ctx, stderrPipe, stderrWriter)
 	}()
 
 	// Reads from pipes must be completed before calling cmd.Wait(). Otherwise

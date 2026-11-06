@@ -1,4 +1,4 @@
-// Copyright IBM Corp. 2020, 2026
+// Copyright (c) HashiCorp, Inc.
 // SPDX-License-Identifier: MPL-2.0
 
 package tfexec
@@ -14,7 +14,6 @@ import (
 
 type showConfig struct {
 	reattachInfo ReattachInfo
-	jsonNumber   *UseJSONNumberOption
 }
 
 var defaultShowOptions = showConfig{}
@@ -25,10 +24,6 @@ type ShowOption interface {
 
 func (opt *ReattachOption) configureShow(conf *showConfig) {
 	conf.reattachInfo = opt.info
-}
-
-func (opt *UseJSONNumberOption) configureShow(conf *showConfig) {
-	conf.jsonNumber = opt
 }
 
 // Show reads the default state path and outputs the state.
@@ -58,11 +53,6 @@ func (tf *Terraform) Show(ctx context.Context, opts ...ShowOption) (*tfjson.Stat
 
 	var ret tfjson.State
 	ret.UseJSONNumber(true)
-
-	if c.jsonNumber != nil {
-		ret.UseJSONNumber(c.jsonNumber.useJSONNumber)
-	}
-
 	err = tf.runTerraformCmdJSON(ctx, showCmd, &ret)
 	if err != nil {
 		return nil, err
@@ -106,11 +96,6 @@ func (tf *Terraform) ShowStateFile(ctx context.Context, statePath string, opts .
 
 	var ret tfjson.State
 	ret.UseJSONNumber(true)
-
-	if c.jsonNumber != nil {
-		ret.UseJSONNumber(c.jsonNumber.useJSONNumber)
-	}
-
 	err = tf.runTerraformCmdJSON(ctx, showCmd, &ret)
 	if err != nil {
 		return nil, err
@@ -153,11 +138,6 @@ func (tf *Terraform) ShowPlanFile(ctx context.Context, planPath string, opts ...
 	showCmd := tf.showCmd(ctx, true, mergeEnv, planPath)
 
 	var ret tfjson.Plan
-
-	if c.jsonNumber != nil {
-		ret.UseJSONNumber(c.jsonNumber.useJSONNumber)
-	}
-
 	err = tf.runTerraformCmdJSON(ctx, showCmd, &ret)
 	if err != nil {
 		return nil, err

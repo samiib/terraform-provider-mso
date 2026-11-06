@@ -38,12 +38,6 @@ type PrivateKey interface {
 	encoding.BinaryMarshaler
 }
 
-// A private key that retains the seed with which it was generated.
-type Seeded interface {
-	// returns the seed if retained, otherwise nil
-	Seed() []byte
-}
-
 // A Scheme represents a specific instance of a signature scheme.
 type Scheme interface {
 	// Name of the scheme.
@@ -113,7 +107,4 @@ var (
 	// ErrContextNotSupported is the error used if a context is not
 	// supported.
 	ErrContextNotSupported = errors.New("context not supported")
-
-	// ErrContextTooLong is the error used if the context string is too long.
-	ErrContextTooLong = errors.New("context string too long")
 )

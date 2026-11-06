@@ -1,4 +1,4 @@
-// Copyright IBM Corp. 2020, 2026
+// Copyright (c) HashiCorp, Inc.
 // SPDX-License-Identifier: MPL-2.0
 
 //go:build !windows
@@ -16,7 +16,9 @@ import (
 func lookupDirs(extraDirs []string) []string {
 	pathVar := os.Getenv("PATH")
 	dirs := filepath.SplitList(pathVar)
-	dirs = append(dirs, extraDirs...)
+	for _, ep := range extraDirs {
+		dirs = append(dirs, ep)
+	}
 	return dirs
 }
 

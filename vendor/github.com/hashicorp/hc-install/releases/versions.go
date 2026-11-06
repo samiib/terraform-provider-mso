@@ -1,4 +1,4 @@
-// Copyright IBM Corp. 2020, 2026
+// Copyright (c) HashiCorp, Inc.
 // SPDX-License-Identifier: MPL-2.0
 
 package releases
@@ -30,9 +30,8 @@ type Versions struct {
 }
 
 type InstallationOptions struct {
-	Timeout    time.Duration
-	Dir        string
-	LicenseDir string
+	Timeout time.Duration
+	Dir     string
 
 	SkipChecksumVerification bool
 
@@ -47,7 +46,7 @@ func (v *Versions) List(ctx context.Context) ([]src.Source, error) {
 		return nil, fmt.Errorf("invalid product name: %q", v.Product.Name)
 	}
 
-	if err := validateEnterpriseOptions(v.Enterprise, v.Install.LicenseDir); err != nil {
+	if err := validateEnterpriseOptions(v.Enterprise); err != nil {
 		return nil, err
 	}
 
@@ -86,7 +85,6 @@ func (v *Versions) List(ctx context.Context) ([]src.Source, error) {
 			Version:    pv.Version,
 			InstallDir: v.Install.Dir,
 			Timeout:    v.Install.Timeout,
-			LicenseDir: v.Install.LicenseDir,
 
 			ArmoredPublicKey:         v.Install.ArmoredPublicKey,
 			SkipChecksumVerification: v.Install.SkipChecksumVerification,
@@ -94,7 +92,8 @@ func (v *Versions) List(ctx context.Context) ([]src.Source, error) {
 
 		if v.Enterprise != nil {
 			ev.Enterprise = &EnterpriseOptions{
-				Meta: v.Enterprise.Meta,
+				Meta:       v.Enterprise.Meta,
+				LicenseDir: v.Enterprise.LicenseDir,
 			}
 		}
 

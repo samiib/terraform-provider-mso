@@ -1,4 +1,4 @@
-// Copyright IBM Corp. 2020, 2026
+// Copyright (c) HashiCorp, Inc.
 // SPDX-License-Identifier: MPL-2.0
 
 package tfexec
@@ -6,18 +6,6 @@ package tfexec
 import (
 	"encoding/json"
 )
-
-// AllowDeferralOption represents the -allow-deferral flag. This flag is only enabled in
-// experimental builds of Terraform. (alpha or built via source with experiments enabled)
-type AllowDeferralOption struct {
-	allowDeferral bool
-}
-
-// AllowDeferral represents the -allow-deferral flag. This flag is only enabled in
-// experimental builds of Terraform. (alpha or built via source with experiments enabled)
-func AllowDeferral(allowDeferral bool) *AllowDeferralOption {
-	return &AllowDeferralOption{allowDeferral}
-}
 
 // AllowMissingConfigOption represents the -allow-missing-config flag.
 type AllowMissingConfigOption struct {
@@ -168,18 +156,10 @@ func Force(force bool) *ForceOption {
 	return &ForceOption{force}
 }
 
-// ForceCopyOption represents the `-force-copy` flag for `terraform init`.
-// Defaults to false.
 type ForceCopyOption struct {
 	forceCopy bool
 }
 
-// ForceCopy returns a ForceCopyOption that indicates whether the init command's -force-copy flag
-// should be set to true or false.
-//
-// Using -force-copy with an init command enables the -migrate-state option but all prompts for
-// input are suppressed and automatically answers "yes" to the migration questions. This is an
-// alternative to `-migrate-state` when Terraform is running in automation, including via terrform-exec.
 func ForceCopy(forceCopy bool) *ForceCopyOption {
 	return &ForceCopyOption{forceCopy}
 }
@@ -190,15 +170,6 @@ type FromModuleOption struct {
 
 func FromModule(source string) *FromModuleOption {
 	return &FromModuleOption{source}
-}
-
-type GenerateConfigOutOption struct {
-	path string
-}
-
-// GenerateConfigOut represents the -generate-config-out flag.
-func GenerateConfigOut(path string) *GenerateConfigOutOption {
-	return &GenerateConfigOutOption{path}
 }
 
 type GetOption struct {
@@ -270,15 +241,6 @@ type GraphPlanOption struct {
 // GraphPlan represents the -plan flag which is a specified plan file string
 func GraphPlan(file string) *GraphPlanOption {
 	return &GraphPlanOption{file}
-}
-
-type UseJSONNumberOption struct {
-	useJSONNumber bool
-}
-
-// JSONNumber determines how numerical values are handled during JSON decoding.
-func JSONNumber(useJSONNumber bool) *UseJSONNumberOption {
-	return &UseJSONNumberOption{useJSONNumber}
 }
 
 type PlatformOption struct {
@@ -466,13 +428,4 @@ type VerifyPluginsOption struct {
 
 func VerifyPlugins(verifyPlugins bool) *VerifyPluginsOption {
 	return &VerifyPluginsOption{verifyPlugins}
-}
-
-// LockFileOption represents the -lock-file flag.
-type LockFileOption struct {
-	useLockFile bool
-}
-
-func LockFile(useLockFile bool) *LockFileOption {
-	return &LockFileOption{useLockFile: useLockFile}
 }

@@ -1,4 +1,4 @@
-// Copyright IBM Corp. 2020, 2026
+// Copyright (c) HashiCorp, Inc.
 // SPDX-License-Identifier: MPL-2.0
 
 package build
@@ -7,7 +7,7 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"io"
+	"io/ioutil"
 	"log"
 	"os"
 	"os/exec"
@@ -17,7 +17,7 @@ import (
 	"golang.org/x/mod/modfile"
 )
 
-var discardLogger = log.New(io.Discard, "", 0)
+var discardLogger = log.New(ioutil.Discard, "", 0)
 
 // GoBuild represents a Go builder (to run "go build")
 type GoBuild struct {
@@ -128,7 +128,7 @@ func (gb *GoBuild) ensureRequiredGoVersion(ctx context.Context, repoDir string) 
 		installedVersion = goVersion
 	}
 
-	if requiredVersion, ok := gb.guessRequiredGoVersion(repoDir); ok {
+	if requiredVersion, ok := guessRequiredGoVersion(repoDir); ok {
 		gb.logger.Printf("attempting to satisfy guessed Go requirement %s", requiredVersion)
 		goVersion, err := GetGoVersion(ctx)
 		if err != nil {
@@ -158,43 +158,10 @@ func (gb *GoBuild) ensureRequiredGoVersion(ctx context.Context, repoDir string) 
 // e.g. to remove any version installed temporarily per requirements
 type CleanupFunc func(context.Context)
 
-func (gb *GoBuild) guessRequiredGoVersion(repoDir string) (*version.Version, bool) {
-	goEnvVersion, goEnvFound := readGoEnvVersion(repoDir)
-	if goEnvFound {
-		gb.logger.Printf("found Go version %s in .go-version", goEnvVersion)
-	}
-
-	goModVersion, goModFound := readGoModVersion(repoDir)
-	if goModFound {
-		gb.logger.Printf("found Go version %s in go.mod", goModVersion)
-	}
-
-	// unlikely case for modern Go codebases of go.mod missing
-	if !goModFound && goEnvFound {
-		return goEnvVersion, true
-	}
-
-	if goModFound && !goEnvFound {
-		return goModVersion, true
-	}
-
-	if goEnvFound && goModFound {
-		// only use .go-version if it's compatible with go.mod
-		if goEnvVersion.GreaterThanOrEqual(goModVersion) {
-			return goEnvVersion, true
-		}
-		gb.logger.Printf("found Go versions mismatch (.go-version: %s, go.mod: %s), choosing go.mod (%s)",
-			goEnvVersion, goModVersion, goModVersion)
-		return goModVersion, true
-	}
-
-	return nil, false
-}
-
-func readGoEnvVersion(repoDir string) (*version.Version, bool) {
+func guessRequiredGoVersion(repoDir string) (*version.Version, bool) {
 	goEnvFile := filepath.Join(repoDir, ".go-version")
 	if fi, err := os.Stat(goEnvFile); err == nil && !fi.IsDir() {
-		b, err := os.ReadFile(goEnvFile)
+		b, err := ioutil.ReadFile(goEnvFile)
 		if err != nil {
 			return nil, false
 		}
@@ -204,13 +171,10 @@ func readGoEnvVersion(repoDir string) (*version.Version, bool) {
 		}
 		return requiredVersion, true
 	}
-	return nil, false
-}
 
-func readGoModVersion(repoDir string) (*version.Version, bool) {
 	goModFile := filepath.Join(repoDir, "go.mod")
 	if fi, err := os.Stat(goModFile); err == nil && !fi.IsDir() {
-		b, err := os.ReadFile(goModFile)
+		b, err := ioutil.ReadFile(goModFile)
 		if err != nil {
 			return nil, false
 		}
@@ -227,5 +191,6 @@ func readGoModVersion(repoDir string) (*version.Version, bool) {
 		}
 		return requiredVersion, true
 	}
+
 	return nil, false
 }

@@ -1,4 +1,4 @@
-// Copyright IBM Corp. 2020, 2026
+// Copyright (c) HashiCorp, Inc.
 // SPDX-License-Identifier: MPL-2.0
 
 package releases
@@ -6,6 +6,7 @@ package releases
 import (
 	"context"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
@@ -27,10 +28,6 @@ type ExactVersion struct {
 	InstallDir string
 	Timeout    time.Duration
 
-	// LicenseDir represents directory path where to install license files
-	// (required for enterprise versions, optional for Community editions).
-	LicenseDir string
-
 	// Enterprise indicates installation of enterprise version (leave nil for Community editions)
 	Enterprise *EnterpriseOptions
 
@@ -40,10 +37,7 @@ type ExactVersion struct {
 	// instead of built-in pubkey to verify signature of downloaded checksums
 	ArmoredPublicKey string
 
-	// ApiBaseURL is an optional field that specifies a custom URL to download the product from.
-	// If ApiBaseURL is set, the product will be downloaded from this base URL instead of the default site.
-	// Note: The directory structure of the custom URL must match the HashiCorp releases site (including the index.json files).
-	ApiBaseURL    string
+	apiBaseURL    string
 	logger        *log.Logger
 	pathsToRemove []string
 }
@@ -76,7 +70,7 @@ func (ev *ExactVersion) Validate() error {
 		return fmt.Errorf("unknown version")
 	}
 
-	if err := validateEnterpriseOptions(ev.Enterprise, ev.LicenseDir); err != nil {
+	if err := validateEnterpriseOptions(ev.Enterprise); err != nil {
 		return err
 	}
 
@@ -99,7 +93,7 @@ func (ev *ExactVersion) Install(ctx context.Context) (string, error) {
 	if dstDir == "" {
 		var err error
 		dirName := fmt.Sprintf("%s_*", ev.Product.Name)
-		dstDir, err = os.MkdirTemp("", dirName)
+		dstDir, err = ioutil.TempDir("", dirName)
 		if err != nil {
 			return "", err
 		}
@@ -109,8 +103,8 @@ func (ev *ExactVersion) Install(ctx context.Context) (string, error) {
 	ev.log().Printf("will install into dir at %s", dstDir)
 
 	rels := rjson.NewReleases()
-	if ev.ApiBaseURL != "" {
-		rels.BaseURL = ev.ApiBaseURL
+	if ev.apiBaseURL != "" {
+		rels.BaseURL = ev.apiBaseURL
 	}
 	rels.SetLogger(ev.log())
 	installVersion := ev.Version
@@ -131,14 +125,17 @@ func (ev *ExactVersion) Install(ctx context.Context) (string, error) {
 	if ev.ArmoredPublicKey != "" {
 		d.ArmoredPublicKey = ev.ArmoredPublicKey
 	}
-	if ev.ApiBaseURL != "" {
-		d.BaseURL = ev.ApiBaseURL
+	if ev.apiBaseURL != "" {
+		d.BaseURL = ev.apiBaseURL
 	}
 
-	licenseDir := ev.LicenseDir
-	up, err := d.DownloadAndUnpack(ctx, pv, dstDir, licenseDir)
-	if up != nil {
-		ev.pathsToRemove = append(ev.pathsToRemove, up.PathsToRemove...)
+	licenseDir := ""
+	if ev.Enterprise != nil {
+		licenseDir = ev.Enterprise.LicenseDir
+	}
+	zipFilePath, err := d.DownloadAndUnpack(ctx, pv, dstDir, licenseDir)
+	if zipFilePath != "" {
+		ev.pathsToRemove = append(ev.pathsToRemove, zipFilePath)
 	}
 	if err != nil {
 		return "", err
