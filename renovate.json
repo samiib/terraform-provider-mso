@@ -1,0 +1,29 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "baseBranches": ["develop"],
+  "semanticCommits": "disabled",
+  "commitMessagePrefix": "[ignore]",
+  "postUpdateOptions": ["gomodTidy"],
+  "minimumReleaseAge": "3 days",
+  "prConcurrentLimit": 5,
+  "labels": ["dependencies"],
+  "packageRules": [
+    {
+      "description": "Group all Terraform plugin toolchain packages into a single PR so the muxed provider always compiles",
+      "matchManagers": ["gomod"],
+      "matchPackageNames": ["github.com/hashicorp/terraform-plugin-*"],
+      "groupName": "terraform-plugin toolchain"
+    },
+    {
+      "description": "Keep the go directive bump in its own PR",
+      "matchManagers": ["gomod"],
+      "matchDepTypes": ["golang"],
+      "groupName": "go version"
+    },
+    {
+      "matchManagers": ["github-actions"],
+      "groupName": "github actions"
+    }
+  ]
+}
