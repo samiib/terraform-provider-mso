@@ -28,6 +28,12 @@
       "groupName": "terraform-plugin toolchain"
     },
     {
+      "description": "Bump the go directive to the latest Go release instead of treating it as a satisfied minimum",
+      "matchManagers": ["gomod"],
+      "matchDepTypes": ["golang"],
+      "rangeStrategy": "bump"
+    },
+    {
       "matchManagers": ["github-actions"],
       "groupName": "github actions",
       "separateMajorMinor": false
