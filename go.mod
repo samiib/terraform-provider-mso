@@ -1,6 +1,6 @@
 module github.com/CiscoDevNet/terraform-provider-mso
 
-go 1.26.9
+go 1.27.4
 
 require (
 	github.com/ciscoecosystem/mso-go-client v1.36.0
